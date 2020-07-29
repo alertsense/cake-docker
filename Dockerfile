@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.1-sdk AS builder
+FROM microsoft/dotnet:2.2-sdk AS builder
 
 RUN apt-get update -qq \
     && apt-get install -y git zip unzip dos2unix libunwind8
@@ -9,7 +9,8 @@ RUN dotnet --info \
     && cd src \
     && git clone https://github.com/cake-build/cake.git \
     && cd cake \
-    && latesttag=$(git describe --tags `git rev-list --tags --max-count=1`) \
+#    && latesttag=$(git describe --tags `git rev-list --tags --max-count=1`) \
+    && latesttag="v0.34.1" \
     && echo checking out ${latesttag} \
     && git checkout -b ${latesttag} ${latesttag} \
     && cd .. \
@@ -17,7 +18,7 @@ RUN dotnet --info \
     && ./build.sh \
     && echo ${latesttag} > /app/cakeversion
 
-FROM microsoft/dotnet:2.1-sdk
+FROM microsoft/dotnet:2.2-sdk
 
 RUN apt-get update -qq \
     && apt-get install -y libunwind8 dos2unix
